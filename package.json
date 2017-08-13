@@ -1,0 +1,35 @@
+{
+  "name": "mtl-file-parser",
+  "version": "0.0.0",
+  "description": "Material Template Library File (.MTL) Parser",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WesUnwin/mtl-file-parser.git"
+  },
+  "keywords": [
+    "MTL",
+    "material",
+    "template",
+    "library",
+    "materials",
+    "wavefront",
+    "obj",
+    "parser"
+  ],
+  "author": "Wesley Unwin <wes_unwin@hotmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/WesUnwin/mtl-file-parser/issues"
+  },
+  "homepage": "https://github.com/WesUnwin/mtl-file-parser#readme",
+  "devDependencies": {
+    "jest": "^20.0.4"
+  }
+}
