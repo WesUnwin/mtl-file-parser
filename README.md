@@ -13,7 +13,7 @@ npm install --save mtl-file-parser
 ## Usage
 
 ```javascript
-const MTLFile = require('obj-file-parser');
+const MTLFile = require('mtl-file-parser');
 
 const fileContents =
   'newmtl green_material\n' +
