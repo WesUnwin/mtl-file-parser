@@ -6,3 +6,6 @@
 -----
   Refactor to output JSON (rather than Material class instances)
 
+0.1.1
+-----
+  README file correction to "More to come" section

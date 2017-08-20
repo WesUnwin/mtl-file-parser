@@ -69,7 +69,8 @@ The extracted materials are returned in the following format:
 
 ## More to come
 mtl-file-parser is actively being developed, and does not yet have full support of the MTL file specification.
-Your comments, feedback
+Your comments, feedback and bug reports are welcome and appreciated. Thank you!
+
 ## Donation
 If this project is helping you and you want to see more, please help support the development of
 this and other related libraries!
