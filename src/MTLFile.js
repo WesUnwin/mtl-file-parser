@@ -1,7 +1,5 @@
 'use strict';
 
-const Material = require('./Material');
-
 
 class MTLFile {
 
@@ -28,7 +26,7 @@ class MTLFile {
 
       this.lineNumber = (index + 1);
 
-      const lineItems = this._stripComments(line).replace(/\s\s+/g, ' ').trim().split(' ');
+      const lineItems = MTLFile._stripComments(line).replace(/\s\s+/g, ' ').trim().split(' ');
 
       if (lineItems.length == 0 || !lineItems[0]) {
         return; // Skip blank lines
@@ -123,7 +121,7 @@ class MTLFile {
     return this.materials;
   }
 
-  _stripComments(lineString) {
+  static _stripComments(lineString) {
     let commentIndex = lineString.indexOf('#');
     if(commentIndex > -1)
       return lineString.substring(0, commentIndex);
@@ -131,12 +129,45 @@ class MTLFile {
       return lineString;
   }
 
+  _createMaterial(name) {
+    const newMaterial = {
+      name: name,
+      illum: 0,
+      Ka: {
+        method: 'rgb',
+        red: 0,
+        green: 0,
+        blue: 0
+      },
+      Kd: {
+        method: 'rgb',
+        red: 0,
+        green: 0,
+        blue: 0
+      },
+      Ks: {
+        method: 'ks',
+        red: 0,
+        green: 0,
+        blue: 0
+      },
+      map_Ka: {
+        file: null
+      },
+      map_Kd: {
+        file: null
+      },
+      map_Ks: {
+        file: null
+      }
+    };
+    this.materials.push(newMaterial);
+  }
   _getCurrentMaterial() {
-    if (!this.currentMaterial) {
-      this.currentMaterial = new Material(this.defaultMaterialName);
-      this.materials.push(this.currentMaterial);
+    if (this.materials.length == 0) {
+      this._createMaterial(this.defaultMaterialName);
     }
-    return this.currentMaterial;
+    return this.materials[this.materials.length - 1];
   }
 
   // newmtl material_name
@@ -144,38 +175,59 @@ class MTLFile {
     if (lineItems.length < 2) {
       throw 'newmtl statement must specify a name for the maerial (eg, newmtl brickwall)';
     }
-    const newMat = new Material(lineItems[1]);
-    this.materials.push(newMat);
-    this.currentMaterial = newMat;
+    this._createMaterial(lineItems[1]);
   }
 
   _parseIllum(lineItems) {
     if (lineItems.length < 2) {
       this._fileError('to few arguments, expected: illum <number>');
     }
-    this._getCurrentMaterial().setIllum(parseInt(lineItems[1]));
+    this._getCurrentMaterial().illum = parseInt(lineItems[1]);
   }
 
   // Ka r g b         <- currently only this syntax is supported
   // Ka spectral file.rfl factor
   // Ka xyz x y z
   _parseKa(lineItems) {
+    if (lineItems.length != 4) {
+      this._notImplemented('Ka statements must have exactly 3 arguments (only Ka R G B syntax is supported');
+      return;
+    }
+    const Ka = this._getCurrentMaterial().Ka;
     const color = this._parseKStatementRGB(lineItems);
-    this._getCurrentMaterial().setAmbientColor(color);
+    Ka.red = color.red;
+    Ka.green = color.green;
+    Ka.blue = color.blue;
   }
 
   // Kd r g b         <- currently only this syntax is supported
   // Kd spectral file.rfl factor
   // Kd xyz x y z
   _parseKd(lineItems) {
-    this._notImplemented('Kd');
+    if (lineItems.length != 4) {
+      this._notImplemented('Kd statements must have exactly 3 arguments (only Kd R G B syntax is supported');
+      return;
+    }
+    const Kd = this._getCurrentMaterial().Kd;
+    const color = this._parseKStatementRGB(lineItems);
+    Kd.red = color.red;
+    Kd.green = color.green;
+    Kd.blue = color.blue;
   }
 
   // Ks r g b
   // Ks spectral file.rfl factor
   // Ks xyz x y z
   _parseKs(lineItems) {
-    this._notImplemented('Ks');
+    if (lineItems.length != 4) {
+      this._notImplemented('Ks statements must have exactly 3 arguments (only Ks R G B syntax is supported');
+      return;
+    }
+    const Ks = this._getCurrentMaterial().Ks;
+    const color = this._parseKStatementRGB(lineItems);
+    Ks.red = color.red;
+    Ks.green = color.green;
+    Ks.blue = color.blue;
   }
 
   // extracts the rgb values from a "Ka/Kd/Ks r g b" statement
@@ -185,8 +237,10 @@ class MTLFile {
     }
     if (lineItems[1].toLowerCase() == 'spectral') {
       this._notImplemented('Ka spectral <filename> <factor>');
+      return;
     } else if (lineItems[1].toLowerCase() == 'xyz') {
       this._notImplemented('Ka xyz <x> <y> <z>');
+      return;
     }
 
     return {
@@ -225,17 +279,34 @@ class MTLFile {
   // map_Ka [options] textureFile
   // map_Ka -s 1 1 1 -o 0 0 0 -mm 0 1 file.mpc
   _parseMapKa(lineItems) {
+    // TODO parse options (lineItems[1] to lineItems[lineItems.length - 2])
     if (lineItems.length < 2) {
       this._fileError('to few arguments, expected: map_ka <textureImageFile>');
     }
-    // TODO parse options (lineItems[1] to lineItems[lineItems.length - 2])
-    const lastLineItem = lineItems[lineItems.length - 1];
-    this._getCurrentMaterial().setAmbientTextureImageURL(lastLineItem);
+    const file = lineItems[lineItems.length - 1];
+    this._getCurrentMaterial().map_Ka.file = file;
   }
 
   // map_Kd [options] textureFile
   _parseMapKd(lineItems) {
-    this._notImplemented('map_Kd');
+    // TODO parse options (lineItems[1] to lineItems[lineItems.length - 2])
+    if (lineItems.length < 2) {
+      this._fileError('to few arguments, expected: map_Kd <textureImageFile>');
+    }
+    const file = lineItems[lineItems.length - 1];
+    this._getCurrentMaterial().map_Kd.file = file;
+  }
+
+  // map_Ks [options] textureFile
+  _parseMapKs(lineItems) {
+    // TODO parse options (lineItems[1] to lineItems[lineItems.length - 2])
+    if (lineItems.length < 2) {
+      this._fileError('to few arguments, expected: map_Ks <textureImageFile>');
+    } else if (lineItems.length > 2) {
+
+    }
+    const file = lineItems[lineItems.length - 1];
+    this._getCurrentMaterial().map_Ks.file = file;
   }
 
   _parseMapNs(lineItems) {
@@ -263,10 +334,9 @@ class MTLFile {
   }
 
   _fileError(message) {
-    const file = this.filename ? `File: ${this.filename}` : '';
-    const material = `Material: ${this.currentMaterial.getName()}`;
+    const material = `Material: ${this._getCurrentMaterial().name}`;
     const line = `Line: ${this.lineNumber}`;
-    const errorMessage = `MTL file format error (${file}  ${material}  ${line}): ${message}`;
+    const errorMessage = `MTL file format error (${line}  ${material}): ${message}`;
     throw errorMessage;
   }
 
