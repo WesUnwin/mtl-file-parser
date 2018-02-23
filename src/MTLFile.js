@@ -257,7 +257,7 @@ class MTLFile {
   // ns 500
   // Defines how focused the specular highlight is,
   // typically in the range of 0 to 1000.
-  _parseNS(lineItems) {
+  _parseNs(lineItems) {
     this._notImplemented('Ns');
   }
 
