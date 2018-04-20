@@ -53,4 +53,13 @@ describe('MTLFile', () => {
       });
     });
   });
+
+  describe('map_d Statements', () => {
+    describe('map_d [options] textureFile', () => {
+      it('sets the alpha texture file to the given path', () => {
+        const materials = new MTLFile('map_d folder/file.png').parse();
+        expect(materials[0].map_d.file).toBe('folder/file.png');
+      });
+    });
+  });
 });
