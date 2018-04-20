@@ -55,7 +55,7 @@ class MTLFile {
           //  2:  Diffuse and specular illumination model using Lambertian shading,
           //      and Blinn's interpretation of Phong's specular illumination model.
 
-          //        color = KaIa 
+          //        color = KaIa
           //          + Kd { SUM j=1..ls, (N*Lj)Ij }
           //          + Ks { SUM j=1..ls, ((H*Hj)^Ns)Ij }
           this._parseIllum(lineItems);
@@ -76,7 +76,7 @@ class MTLFile {
         case 'ns': // (Ns) - Specular Exponent
           this._parseNs(lineItems);
           break;
-        case 'ni': // (Ni) - 
+        case 'ni': // (Ni) -
           this._parseNi(lineItems);
           break;
         case 'd': // Controls how the current material dissolves (becomes transparent)
@@ -97,6 +97,9 @@ class MTLFile {
           break;
         case 'map_ns':
           this._parseMapNs(lineItems);
+          break;
+        case 'map_d':
+          this._parseMapD(lineItems);
           break;
 
         case 'disp':
@@ -158,6 +161,9 @@ class MTLFile {
         file: null
       },
       map_Ks: {
+        file: null
+      },
+      map_d: {
         file: null
       }
     };
@@ -295,6 +301,16 @@ class MTLFile {
     }
     const file = lineItems[lineItems.length - 1];
     this._getCurrentMaterial().map_Kd.file = file;
+  }
+
+  // map_d [options] textureFile
+  _parseMapD(lineItems) {
+    // TODO parse options (lineItems[1] to lineItems[lineItems.length - 2])
+    if (lineItems.length < 2) {
+      this._fileError('to few arguments, expected: map_d <textureImageFile>');
+    }
+    const file = lineItems[lineItems.length - 1];
+    this._getCurrentMaterial().map_d.file = file;
   }
 
   // map_Ks [options] textureFile
