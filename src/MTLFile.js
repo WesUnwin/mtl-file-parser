@@ -293,7 +293,7 @@ class MTLFile {
   // A value of 1.0 for "d" is the default and means fully opaque, as does a value of 0.0 for "Tr".
   _parseTr(lineItems) {
     if (lineItems.length < 2) {
-      this._fileError('to few arguments, expected: Tr <float>');
+      this._fileError('to few arguments, expected: Tr <factor>');
     }
     this._getCurrentMaterial().dissolve = 1.0 - parseFloat(lineItems[1]);
   }
