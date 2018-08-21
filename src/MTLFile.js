@@ -245,7 +245,7 @@ class MTLFile {
       this._fileError('to few arguments, expected: Ka/Kd/Ks keyword followed by: r g b values');
     }
     if (lineItems[1].toLowerCase() == 'spectral') {
-      this._notImplemented('Ka spectral <filename> <>');
+      this._notImplemented('Ka spectral <filename> <factor>');
       return;
     } else if (lineItems[1].toLowerCase() == 'xyz') {
       this._notImplemented('Ka xyz <x> <y> <z>');
