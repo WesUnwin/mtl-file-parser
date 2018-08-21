@@ -77,5 +77,4 @@ describe('MTLFile', () => {
     });
   });
 
-
 });
