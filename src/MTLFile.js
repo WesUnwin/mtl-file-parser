@@ -82,7 +82,7 @@ class MTLFile {
         case 'd': // Controls how the current material dissolves (becomes transparent)
           this._parseD(lineItems);
           break;
-        case 'tr': // Controls how the current material becomes transparent (dissolves)
+        case 'tr': // Controls how transparent the current material is (inverted: Tr = 1 - d)
           this._parseTr(lineItems);
           break;
         case 'sharpness':
@@ -275,7 +275,10 @@ class MTLFile {
   }
 
   // d factor
-  // Controls how much the material dissolves (becomes transparent).
+  // Controls how much the current material dissolves (becomes transparent).
+  // Materials can be transparent. This is referred to as being dissolved. 
+  // Unlike real transparency, the result does not depend upon the thickness of the object. 
+  // A value of 1.0 for "d" is the default and means fully opaque, as does a value of 0.0 for "Tr".
   _parseD(lineItems) {
     if (lineItems.length < 2) {
       this._fileError('to few arguments, expected: d <factor>');
@@ -284,12 +287,15 @@ class MTLFile {
   }
 
   // Tr factor
-  // Controls how much the material becomes transparent (dissolves).
+  // Controls how transparent the current material is (inverted: Tr = 1 - d).
+  // Materials can be transparent. This is referred to as being dissolved. 
+  // Unlike real transparency, the result does not depend upon the thickness of the object. 
+  // A value of 1.0 for "d" is the default and means fully opaque, as does a value of 0.0 for "Tr".
   _parseTr(lineItems) {
     if (lineItems.length < 2) {
       this._fileError('to few arguments, expected: Tr <float>');
     }
-    this._getCurrentMaterial().dissolve = 1.0-parseFloat(lineItems[1]);
+    this._getCurrentMaterial().dissolve = 1.0 - parseFloat(lineItems[1]);
   }
 
   _parseSharpness(lineItems) {
