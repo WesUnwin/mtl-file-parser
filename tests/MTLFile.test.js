@@ -62,4 +62,20 @@ describe('MTLFile', () => {
       });
     });
   });
+
+  describe('d Statements', () => {
+    it('sets the dissolve value the current material', () => {
+      const materials = new MTLFile('d 1.0').parse();
+      expect(materials[0].dissolve).toBe(1.0);
+    });
+  });
+
+  describe('Tr Statements', () => {
+    it('sets the transparency value the current material', () => {
+      const materials = new MTLFile('Tr 0.3').parse();
+      expect(materials[0].dissolve).toBe(0.7);
+    });
+  });
+
+
 });

@@ -82,6 +82,9 @@ class MTLFile {
         case 'd': // Controls how the current material dissolves (becomes transparent)
           this._parseD(lineItems);
           break;
+        case 'tr': // Controls how the current material becomes transparent (dissolves)
+          this._parseTr(lineItems);
+          break;
         case 'sharpness':
           this._parseSharpness(lineItems);
           break;
@@ -242,7 +245,7 @@ class MTLFile {
       this._fileError('to few arguments, expected: Ka/Kd/Ks keyword followed by: r g b values');
     }
     if (lineItems[1].toLowerCase() == 'spectral') {
-      this._notImplemented('Ka spectral <filename> <factor>');
+      this._notImplemented('Ka spectral <filename> <>');
       return;
     } else if (lineItems[1].toLowerCase() == 'xyz') {
       this._notImplemented('Ka xyz <x> <y> <z>');
@@ -272,10 +275,21 @@ class MTLFile {
   }
 
   // d factor
-  // d -halo factor
   // Controls how much the material dissolves (becomes transparent).
   _parseD(lineItems) {
-    this._notImplemented('d');
+    if (lineItems.length < 2) {
+      this._fileError('to few arguments, expected: d <factor>');
+    }
+    this._getCurrentMaterial().dissolve = parseFloat(lineItems[1]);
+  }
+
+  // Tr factor
+  // Controls how much the material becomes transparent (dissolves).
+  _parseTr(lineItems) {
+    if (lineItems.length < 2) {
+      this._fileError('to few arguments, expected: Tr <float>');
+    }
+    this._getCurrentMaterial().dissolve = 1.0-parseFloat(lineItems[1]);
   }
 
   _parseSharpness(lineItems) {
