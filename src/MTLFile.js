@@ -168,7 +168,8 @@ class MTLFile {
       },
       map_d: {
         file: null
-      }
+      },
+      dissolve: 1.0,
     };
     this.materials.push(newMaterial);
   }
