@@ -79,5 +79,4 @@ describe('MTLFile', () => {
       expect(materials[0].dissolve).toBe(1.0);
     });
   });
-
 });
