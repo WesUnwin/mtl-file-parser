@@ -10,3 +10,10 @@
 0.1.2
 -----
   README file corrections
+
+0.2.0
+-----
+
+0.3.0
+-----
+Support for material disolve values (d and Tr statements)

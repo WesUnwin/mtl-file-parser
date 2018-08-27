@@ -1,6 +1,6 @@
 {
   "name": "mtl-file-parser",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Material Template Library File (.MTL) Parser",
   "main": "index.js",
   "directories": {
